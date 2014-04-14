@@ -25,30 +25,28 @@ Status Updates::Insert(const string& relation,      // Name of the relation
 {
     /* Your solution goes here */
     
-    int counter =0;                 //variable used for attribute offset number
     AttrDesc *attrs_temp;
-    RelDesc *rel_temp;
+    RelDesc rel_temp = *new RelDesc();
     int no2=0,t=0, j=0,k=0;
     int indexed_attributes=0;
-                //char *str;
-    
+    char *str;
+
     attrCat->getRelInfo(relation, no2, attrs_temp);
-    cout<< "numner of attributes -> "<< no2<<endl;
+    //cout<< "numner of attributes -> "<< no2<<endl;
     
     // add attributes to attrCatalog
     if(no2 == attrCnt)
     {
         while (j < no2)
-        {                                              
-            char *str;                                                         
-            strcpy (str,attrs_temp[j].attrName);                                                                     
+        {
+            strcpy (str,attrs_temp[j].attrName);
             while (k< no2)
-            {       	 
-               if (strcmp(str, attrList[k].attrName)==0)
-              {
+            {
+                if (strcmp(str, attrList[k].attrName)==0)
+                {
                     AttrDesc temp_attr = *new AttrDesc();
                     Record record = *new Record();
-                    RID rid;
+                    RID rid = *new RID();
                     
                     attrCat->getInfo(relation, attrList[k].attrName,temp_attr);
                     if(attrList[t].attrValue == "NULL") //check if it is correct
@@ -58,28 +56,37 @@ Status Updates::Insert(const string& relation,      // Name of the relation
                     
                     record.length = temp_attr.attrLen;
                     memcpy(&record.data, &attrList[k].attrValue, record.length+1);
-                     
-                  // cout<<record.length <<"   record len \n";
-                  // cout<< attrList[k].attrValue <<"   record data \n";
-                                                             
+                    
+                    // cout<<record.length <<"   record len \n";
+                    // cout<< attrList[k].attrValue <<"   record data \n";
+                    
                     attrCat->insertRecord(record, rid);
-                    attrCat->addInfo(temp_attr);                   
-                   // attrCat->getRecord(rid, record);
-                   break;
+                    attrCat->addInfo(temp_attr);
+                    
+                    if(temp_attr.indexed == 1)//if attribute is indexed
+                    {
+                        indexed_attributes++;
+                    
+                    }
+                    
+                    // attrCat->getRecord(rid, record);
+                    break;
                 }
-
+                
                 k++;
-                            cout <<"Below K value is "<<k<<endl;
+                cout <<"Below K value is "<<k<<endl;
             }
-
+            
             k = 0;
             j++;
             cout <<"Below J value is "<<j<<endl;
         }
-  	
-  	        
-  
-                                            
+        
+        //add to relCatalog
+        strcpy(rel_temp.relName , attrList[0].relName);
+        rel_temp.indexCnt = indexed_attributes;
+        rel_temp.attrCnt = no2;
+        relCat->addInfo(rel_temp);
     }
     else
     {
