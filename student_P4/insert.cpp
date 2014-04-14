@@ -15,17 +15,6 @@
 //check if the datatype is the same for attributes
 //how do you implement attrValue
 
-/*
-Datatype check_value_type(attrInfo &a)
-{
-    if (*a.attrValue ==) {
-        <#statements#>
-    }
-
-}
-
-*/
-
 
 Status Updates::Insert(const string& relation,      // Name of the relation
                        const int attrCnt,           // Number of attributes specified in INSERT statement
@@ -42,8 +31,7 @@ Status Updates::Insert(const string& relation,      // Name of the relation
     attrCat->getRelInfo(relation, no2, attrs_temp);
     
     
-    //if(relCat->getInfo(relation, attributes_checker) == OK &&
-      // attributes_checker.attrCnt == attrCnt)
+    // add attributes to attrCatalog
     if(no2 == attrCnt)
     {
         while (no2)
@@ -70,6 +58,7 @@ Status Updates::Insert(const string& relation,      // Name of the relation
             }
             
             no_of_attributes= attrCnt;
+            no2--;
         }
     
         //add relation to relationCatalog
