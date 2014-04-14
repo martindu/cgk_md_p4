@@ -6,14 +6,15 @@
  * Inserts a record into the specified relation
  *
  * Returns:
- * 	OK on success
- * 	an error code otherwise
+ *  OK on success
+ *  an error code otherwise
  */
 
-//check if the relation is present in the list or not
-//check if attribute is present in the attribute list or not
+
+
+//check if no value is specified for value?
 //check if the datatype is the same for attributes
-//how do you implement attrValue
+//should all records go to heapfile or some should go to index file too ? //insertEntry
 
 
 Status Updates::Insert(const string& relation,      // Name of the relation
@@ -24,12 +25,11 @@ Status Updates::Insert(const string& relation,      // Name of the relation
     
     int no_of_attributes = attrCnt; //temp variable for number of attributes
     int counter =0;                 //variable used for attribute offset number
-    RelDesc attributes_checker = *new RelDesc();
     AttrDesc *attrs_temp;
     int no2=0,t=0;
+    RID rid;
     
     attrCat->getRelInfo(relation, no2, attrs_temp);
-    
     
     // add attributes to attrCatalog
     if(no2 == attrCnt)
@@ -44,35 +44,44 @@ Status Updates::Insert(const string& relation,      // Name of the relation
                 if (strcmp(str, attrList[t].attrName)==0)
                 {
                     AttrDesc temp_attr = *new AttrDesc();
-                    strcpy(temp_attr.relName, attrList[t].relName);
-                    strcpy(temp_attr.attrName, attrList[t].attrName);
-                    temp_attr.attrOffset = counter;
-                    temp_attr.attrType = attrList[t].attrType;
-                    temp_attr.attrLen = attrList[t].attrLen;
-                    temp_attr.indexed = false;
-                    attrCat->addInfo(temp_attr);
+                    Record record = *new Record();
+                    
+                    attrCat->getInfo(relation, attrList[t].attrName,temp_attr);
+                    
+                    if(attrList[t].attrValue == NULL) //check if it is correct
+                    {
+                        //print error
+                    }
+                    
+                    record.length = attrList[t].attrLen;
+                    record.data = attrList[t].attrValue;
+                    
+                    /*
+                    if (temp_attr.indexed ==1) // if indexed
+                    {
+                        attrCat->insertEntry(record); // chaangeeeeeee
+                    }
+                    else */
+                    {
+                        attrCat->insertRecord(record, rid);
+                    }
+                    
+                    //attrCat->addInfo(temp_attr);
+                    
                     counter++;
                 }
                 no_of_attributes--;
                 t++;
             }
             
-            no_of_attributes= attrCnt;
+            no_of_attributes = attrCnt;
             no2--;
         }
-    
-        //add relation to relationCatalog
-        RelDesc temp_rel = *new RelDesc();
         
-        strcpy(temp_rel.relName, attrList[0].relName);
-        temp_rel.attrCnt=counter;
-        temp_rel.indexCnt =0;
-        
-        relCat->addInfo(temp_rel);
     }
     else
     {
-        //error.print(""); // print the error
+        //error.print(""); // print the error that number of attributes is not same in relation
     }
     return OK;
 }
