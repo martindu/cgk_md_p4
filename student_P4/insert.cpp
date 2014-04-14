@@ -26,7 +26,7 @@ Status Updates::Insert(const string& relation,      // Name of the relation
     int no_of_attributes = attrCnt; //temp variable for number of attributes
     int counter =0;                 //variable used for attribute offset number
     AttrDesc *attrs_temp;
-    int no2=0,t=0;
+    int no2=0,t=0, j=0;
     RID rid;
     
     attrCat->getRelInfo(relation, no2, attrs_temp);
@@ -34,10 +34,10 @@ Status Updates::Insert(const string& relation,      // Name of the relation
     // add attributes to attrCatalog
     if(no2 == attrCnt)
     {
-        while (no2)
+        while (j < no2)
         {
             char *str;
-            strcpy (str,attrs_temp[0].attrName);
+            strcpy (str,attrs_temp[j].attrName);
             t=0;
             while (no_of_attributes)
             {
@@ -69,13 +69,14 @@ Status Updates::Insert(const string& relation,      // Name of the relation
                     //attrCat->addInfo(temp_attr);
                     
                     counter++;
+                    break;
                 }
                 no_of_attributes--;
                 t++;
             }
             
             no_of_attributes = attrCnt;
-            no2--;
+            j++;
         }
         
     }
