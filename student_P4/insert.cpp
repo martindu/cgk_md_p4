@@ -26,7 +26,9 @@ Status Updates::Insert(const string& relation,      // Name of the relation
     int no_of_attributes = attrCnt; //temp variable for number of attributes
     int counter =0;                 //variable used for attribute offset number
     AttrDesc *attrs_temp;
+    RelDesc *rel_temp;
     int no2=0,t=0, j=0;
+    int indexed_attributes=0;
     RID rid;
     
     attrCat->getRelInfo(relation, no2, attrs_temp);
@@ -56,14 +58,18 @@ Status Updates::Insert(const string& relation,      // Name of the relation
                     record.length = attrList[t].attrLen;
                     record.data = attrList[t].attrValue;
                     
-                    /*
+                    attrCat->insertRecord(record, rid);
+                    attrCat->addInfo(temp_attr);
+                    
                     if (temp_attr.indexed ==1) // if indexed
                     {
-                        attrCat->insertEntry(record); // chaangeeeeeee
+                        indexed_attributes++;
+                        // relCat->addIndex(relation, temp_attr.attrName);
+                        //attrCat->insertEntry(record); // chaangeeeeeee
                     }
-                    else */
+                    else
                     {
-                        attrCat->insertRecord(record, rid);
+                        //attrCat->insertRecord(record, rid);
                     }
                     
                     //attrCat->addInfo(temp_attr);
@@ -78,6 +84,10 @@ Status Updates::Insert(const string& relation,      // Name of the relation
             no_of_attributes = attrCnt;
             j++;
         }
+        rel_temp->attrCnt= attrCnt;
+        rel_temp->indexCnt= indexed_attributes;
+        strcpy(rel_temp->relName ,attrList[0].relName);
+        relCat->addInfo(*rel_temp);
         
     }
     else
